@@ -1,6 +1,5 @@
 package hello.jdbcpractice.repository;
 
-import hello.jdbcpractice.connection.DBConnectionUtil;
 import hello.jdbcpractice.domain.member.Member;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.support.JdbcUtils;
@@ -101,7 +100,7 @@ public class MemberRepositoryV2 {
         }
     }
 
-    public void update(String meeberId, int money) throws SQLException {
+    public void update(String memberId, int money) throws SQLException {
         String sql = "update member set money=? where member_id=?";
 
         Connection conn = null;
@@ -111,7 +110,7 @@ public class MemberRepositoryV2 {
             conn = getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, money);
-            pstmt.setString(2, meeberId);
+            pstmt.setString(2, memberId);
             int resultSize = pstmt.executeUpdate();
             log.info("resultSize={}", resultSize);
         } catch (SQLException e) {
@@ -169,6 +168,6 @@ public class MemberRepositoryV2 {
     private Connection getConnection() throws SQLException {
         Connection conn = dataSource.getConnection();
         log.info("get connection={}, class={}", conn, conn.getClass());
-        return DBConnectionUtil.getConnection();
+        return conn;
     }
 }
