@@ -1,6 +1,5 @@
 package hello.jdbcpractice.repository;
 
-import hello.jdbcpractice.connection.DBConnectionUtil;
 import hello.jdbcpractice.domain.member.Member;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.support.JdbcUtils;
@@ -23,40 +22,42 @@ public class MemberRepositoryV1 {
     public Member save(Member member) throws SQLException {
         String sql = "insert into member (member_id, money) values (?, ?)";
 
-        Connection conn = null;
-        PreparedStatement pstmt = null;
+        Connection conn = null; // Connection 객체 생성
+        PreparedStatement pstmt = null; // PreparedStatement 객체 생성
 
         try {
-            conn = getConnection();
-            pstmt = conn.prepareStatement(sql);
+            conn = getConnection(); // 커넥션 연결
+            pstmt = conn.prepareStatement(sql); // SQL 전달 준비
             pstmt.setString(1, member.getMemberId());
             pstmt.setInt(2, member.getMoney());
-            pstmt.executeUpdate();
+            pstmt.executeUpdate(); // SQL을 DB로 전달
 
             return member;
         } catch (SQLException e) {
             log.error("db error", e);
             throw e;
         } finally {
-            close(conn, pstmt, null);
+            // 사용한 리소스 정리
+            pstmt.close();
+            conn.close();
         }
     }
 
     public Member findById(String memberId) throws SQLException {
         String sql = "select * from member where member_id = ?";
 
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
+        Connection conn = null; // Connecton 객체 생성
+        PreparedStatement pstmt = null; // PreparedStatement 객체 생성
+        ResultSet rs = null; // ResultSet 객체 생성
 
         try {
-            conn = getConnection();
-            pstmt = conn.prepareStatement(sql);
+            conn = getConnection(); // 커넥션 연결
+            pstmt = conn.prepareStatement(sql); // SQL 전달 준비
             pstmt.setString(1, memberId);
 
-            rs = pstmt.executeQuery();
+            rs = pstmt.executeQuery(); // SQL을 DB로 전달하고 받은 응답 저장
 
-            if (rs.next()) {
+            if (rs.next()) { // 커서를 옮기며 데이터가 있다면 true, 없다면 false 반환
                 Member member = new Member();
                 member.setMemberId(rs.getString("member_id"));
                 member.setMoney(rs.getInt("money"));
@@ -68,11 +69,14 @@ public class MemberRepositoryV1 {
             log.error("db error", e);
             throw e;
         } finally {
-            close(conn, pstmt, rs);
+            // 사용한 리소스 정리
+            rs.close();
+            pstmt.close();
+            conn.close();
         }
     }
 
-    public void update(String meeberId, int money) throws SQLException {
+    public void update(String memberId, int money) throws SQLException {
         String sql = "update member set money=? where member_id=?";
 
         Connection conn = null;
@@ -82,7 +86,7 @@ public class MemberRepositoryV1 {
             conn = getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, money);
-            pstmt.setString(2, meeberId);
+            pstmt.setString(2, memberId);
             int resultSize = pstmt.executeUpdate();
             log.info("resultSize={}", resultSize);
         } catch (SQLException e) {
@@ -121,6 +125,6 @@ public class MemberRepositoryV1 {
     private Connection getConnection() throws SQLException {
         Connection conn = dataSource.getConnection();
         log.info("get connection={}, class={}", conn, conn.getClass());
-        return DBConnectionUtil.getConnection();
+        return conn;
     }
 }
