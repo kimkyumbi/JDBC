@@ -35,7 +35,7 @@ class ConnectionTest {
         hikariDataSource.setJdbcUrl(URL);
         hikariDataSource.setUsername(USER);
         hikariDataSource.setPassword(PASSWORD);
-        hikariDataSource.setMaximumPoolSize(10);
+        hikariDataSource.setMaximumPoolSize(30);
         hikariDataSource.setPoolName("pull");
 
         useDataSource(hikariDataSource);
