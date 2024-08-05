@@ -16,6 +16,9 @@ import static hello.jdbcpractice.connection.ConnectionConst.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+/**
+ * 커넥션 파라미터 전달 방식 동기화
+ */
 @Slf4j
 class MemberServiceV2Test {
     private static final String MEMBER_A = "memberA";
